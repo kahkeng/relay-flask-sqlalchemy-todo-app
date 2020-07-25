@@ -15,18 +15,10 @@ import graphQLHTTP from 'express-graphql';
 import path from 'path';
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
-import {schema} from './data/schema';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 
 const APP_PORT = 3000;
-const GRAPHQL_PORT = 8080;
-
-// Expose a GraphQL endpoint
-const graphQLServer = express();
-graphQLServer.use('/', graphQLHTTP({schema, pretty: true}));
-graphQLServer.listen(GRAPHQL_PORT, () => console.log(
-  `GraphQL Server is now running on http://localhost:${GRAPHQL_PORT}`
-));
+const GRAPHQL_PORT = 5000;
 
 // Serve the Relay app
 const compiler = webpack({
@@ -37,12 +29,12 @@ const compiler = webpack({
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
-        exclude: /node_modules/,
-        use: [
-          { loader: 'babel-loader' },
-          { loader: 'ts-loader', options: { transpileOnly: true } },
-        ],
+	test: /\.tsx?$/,
+	exclude: /node_modules/,
+	use: [
+	  { loader: 'babel-loader' },
+	  { loader: 'ts-loader', options: { transpileOnly: true } },
+	],
       },
     ],
   },
