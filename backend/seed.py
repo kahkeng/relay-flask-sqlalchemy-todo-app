@@ -1,4 +1,4 @@
-from .models import engine, db_session, Base, Department, Employee
+from models import engine, db_session, Base, Department, Employee
 Base.metadata.create_all(bind=engine)
 
 # Fill the tables with some data

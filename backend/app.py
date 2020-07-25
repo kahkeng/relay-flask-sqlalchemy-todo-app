@@ -2,8 +2,8 @@ import time
 from flask import Flask
 from flask_graphql import GraphQLView
 
-from .models import db_session
-from .schema import schema, Department
+from models import db_session
+from schema import schema
 
 app = Flask(__name__)
 app.debug = True

@@ -1,7 +1,7 @@
 import graphene
 from graphene import relay
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
-from .models import db_session, Department as DepartmentModel, Employee as EmployeeModel
+from models import db_session, Department as DepartmentModel, Employee as EmployeeModel
 
 
 class Department(SQLAlchemyObjectType):
