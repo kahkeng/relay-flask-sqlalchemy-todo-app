@@ -1,16 +1,17 @@
-from models import engine, db_session, Base, Department, Employee
+from models import engine, db_session, Base, User, Todo
 Base.metadata.create_all(bind=engine)
 
 # Fill the tables with some data
-engineering = Department(name='Engineering')
-db_session.add(engineering)
-hr = Department(name='Human Resources')
-db_session.add(hr)
+viewer = User(name='me')
 
-peter = Employee(name='Peter', department=engineering)
-db_session.add(peter)
-roy = Employee(name='Roy', department=engineering)
-db_session.add(roy)
-tracy = Employee(name='Tracy', department=hr)
-db_session.add(tracy)
+todo1 = Todo(user=viewer, text='Taste JavaScript', complete=True)
+todo2 = Todo(user=viewer, text='Buy a unicorn', complete=False)
+
+# Add another person to ensure we don't leak data
+other = User(name='other')
+
+todo3 = Todo(user=other, text='This should be hidden', complete=True)
+todo4 = Todo(user=other, text='Secret task', complete=False)
+
+db_session.add_all([viewer, other, todo1, todo2, todo3, todo4])
 db_session.commit()

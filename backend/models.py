@@ -13,20 +13,21 @@ Base = declarative_base()
 Base.query = db_session.query_property()
 
 
-class Department(Base):
-    __tablename__ = 'department'
+class User(Base):
+    __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
     name = Column(String)
 
 
-class Employee(Base):
-    __tablename__ = 'employee'
+class Todo(Base):
+    __tablename__ = 'todo'
     id = Column(Integer, primary_key=True)
-    name = Column(String)
-    hired_on = Column(DateTime, default=func.now())
-    department_id = Column(Integer, ForeignKey('department.id'))
-    department = relationship(
-        Department,
-        backref=backref('employees',
+    complete = Column(Boolean)
+    text = Column(String)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship(
+        User,
+        backref=backref('todos',
                         uselist=True,
+                        lazy='dynamic',
                         cascade='delete,all'))
