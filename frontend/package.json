@@ -4,7 +4,7 @@
     "start": "babel-node ./server.js",
     "start-backend": "cd ../backend && source venv/bin/activate && flask run --no-debugger",
     "build": "relay-compiler --src ./ts/ --schema ./data/schema.graphql --language typescript --artifactDirectory ./ts/__relay_artifacts__",
-    "update-schema": "babel-node ./scripts/updateSchema.js",
+    "update-schema": "cd ../backend && source venv/bin/activate && python print_schema.py && mv schema.graphql ../frontend/data/schema.graphql",
     "lint": "tslint --project tsconfig.json",
     "type-check": "tsc --noEmit --pretty"
   },
