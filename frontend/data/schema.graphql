@@ -1,3 +1,8 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
 input AddTodoInput {
   text: String!
   clientMutationId: String
@@ -41,35 +46,24 @@ type Mutation {
   renameTodo(input: RenameTodoInput!): RenameTodoPayload
 }
 
-"""An object with an ID"""
 interface Node {
-  """The id of the object."""
   id: ID!
 }
 
-"""Information about pagination in a connection."""
 type PageInfo {
-  """When paginating forwards, are there more items?"""
   hasNextPage: Boolean!
-
-  """When paginating backwards, are there more items?"""
   hasPreviousPage: Boolean!
-
-  """When paginating backwards, the cursor to continue."""
   startCursor: String
-
-  """When paginating forwards, the cursor to continue."""
   endCursor: String
 }
 
 type Query {
+  node(id: ID!): Node
   viewer: User
-
-  """Fetches an object given its ID"""
-  node(
-    """The ID of an object"""
-    id: ID!
-  ): Node
+  user(id: ID!): User
+  todo(id: ID!): Todo
+  allUsers(sort: [UserSortEnum] = [ID_ASC], before: String, after: String, first: Int, last: Int): UserConnection
+  allTodos(sort: [TodoSortEnum] = [ID_ASC], before: String, after: String, first: Int, last: Int): TodoConnection
 }
 
 input RemoveCompletedTodosInput {
@@ -105,34 +99,55 @@ type RenameTodoPayload {
 }
 
 type Todo implements Node {
-  """The ID of an object"""
   id: ID!
-  text: String
   complete: Boolean
+  text: String
+  userId: Int
+  user: User
 }
 
-"""A connection to a list of items."""
 type TodoConnection {
-  """Information to aid in pagination."""
   pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [TodoEdge]
+  edges: [TodoEdge]!
 }
 
-"""An edge in a connection."""
 type TodoEdge {
-  """The item at the end of the edge"""
   node: Todo
-
-  """A cursor for use in pagination"""
   cursor: String!
 }
 
+enum TodoSortEnum {
+  ID_ASC
+  ID_DESC
+  COMPLETE_ASC
+  COMPLETE_DESC
+  TEXT_ASC
+  TEXT_DESC
+  USER_ID_ASC
+  USER_ID_DESC
+}
+
 type User implements Node {
-  """The ID of an object"""
   id: ID!
-  todos(status: String = "any", after: String, first: Int, before: String, last: Int): TodoConnection
+  name: String
+  todos(status: String = "any", before: String, after: String, first: Int, last: Int): TodoConnection
   totalCount: Int
   completedCount: Int
+}
+
+type UserConnection {
+  pageInfo: PageInfo!
+  edges: [UserEdge]!
+}
+
+type UserEdge {
+  node: User
+  cursor: String!
+}
+
+enum UserSortEnum {
+  ID_ASC
+  ID_DESC
+  NAME_ASC
+  NAME_DESC
 }

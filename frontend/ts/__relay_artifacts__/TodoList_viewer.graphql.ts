@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 
 import { ReaderFragment } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
@@ -10,7 +11,7 @@ export type TodoList_viewer = {
                 readonly complete: boolean | null;
                 readonly " $fragmentRefs": FragmentRefs<"Todo_todo">;
             } | null;
-        } | null> | null;
+        } | null>;
     } | null;
     readonly id: string;
     readonly totalCount: number | null;
