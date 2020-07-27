@@ -15,7 +15,23 @@ cd backend
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+```
+
+Seed the database
+
+```
 python seed.py
+```
+
+Run tests (optional)
+
+```
+pytest
+```
+
+Start backend server
+
+```
 flask run
 ```
 
