@@ -3,8 +3,9 @@ TodoMVC using React/Relay/Typescript frontend, Flask/Graphene/SQLAlchemy backend
 
 ## Prerequisites
 
-* Python3
-* Yarn
+* [Python3](https://www.python.org)
+* [NodeJS](https://nodejs.org)
+* [Yarn](https://yarnpkg.com)
 
 ## Installation
 
