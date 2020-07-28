@@ -1,6 +1,6 @@
 #
-# Copyright © 2017 Sean Bolton.
-# Copyright © 2020 Kah Keng Tay.
+# Copyright (c) 2017 Sean Bolton.
+# Copyright (c) 2020 Kah Keng Tay.
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
