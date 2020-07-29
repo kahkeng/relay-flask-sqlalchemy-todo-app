@@ -11,7 +11,6 @@
  */
 
 import express from 'express';
-import graphQLHTTP from 'express-graphql';
 import path from 'path';
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
@@ -29,12 +28,12 @@ const compiler = webpack({
   module: {
     rules: [
       {
-	test: /\.tsx?$/,
-	exclude: /node_modules/,
-	use: [
-	  { loader: 'babel-loader' },
-	  { loader: 'ts-loader', options: { transpileOnly: true } },
-	],
+        test: /\.tsx?$/,
+        exclude: /node_modules/,
+        use: [
+          { loader: 'babel-loader' },
+          { loader: 'ts-loader', options: { transpileOnly: true } },
+        ],
       },
     ],
   },
