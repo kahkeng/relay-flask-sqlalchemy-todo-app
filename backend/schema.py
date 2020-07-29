@@ -55,18 +55,21 @@ class User(SQLAlchemyObjectType):
     total_count = graphene.Int()
     completed_count = graphene.Int()
 
-    def resolve_todos(self, info, **kwargs):
-        qs = self.todos
+    @staticmethod
+    def resolve_todos(root, info, **kwargs):
+        qs = root.todos
         status = kwargs.get('status', None)
         if status and status == 'completed':
             qs = qs.filter(TodoModel.complete == True)
         return qs.all()
 
-    def resolve_total_count(self, info):
-        return self.todos.count()
+    @staticmethod
+    def resolve_total_count(root, info):
+        return root.todos.count()
 
-    def resolve_completed_count(self, info):
-        return self.todos.filter(TodoModel.complete == True).count()
+    @staticmethod
+    def resolve_completed_count(root, info):
+        return root.todos.filter(TodoModel.complete == True).count()
 
 
 def get_viewer():
@@ -77,7 +80,8 @@ class Query(graphene.ObjectType):
     node = relay.Node.Field()
     viewer = graphene.Field(User)
 
-    def resolve_viewer(self, info):
+    @staticmethod
+    def resolve_viewer(root, info):
         return get_viewer()
 
     user = relay.Node.Field(User)
