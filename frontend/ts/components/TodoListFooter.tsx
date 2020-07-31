@@ -10,6 +10,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import { Link } from 'found'
+
 import RemoveCompletedTodosMutation from "../mutations/RemoveCompletedTodosMutation";
 
 import * as React from "react";
@@ -41,6 +43,25 @@ class TodoListFooter extends React.Component<Props> {
           <strong>{numRemainingTodos}</strong> item
           {numRemainingTodos === 1 ? "" : "s"} left
         </span>
+
+        <ul className="filters">
+          <li>
+            <Link to="/" activeClassName="selected" exact>
+              All
+            </Link>
+          </li>
+          <li>
+            <Link to="/active" activeClassName="selected">
+              Active
+            </Link>
+          </li>
+          <li>
+            <Link to="/completed" activeClassName="selected">
+              Completed
+            </Link>
+          </li>
+        </ul>
+
         {numCompletedTodos > 0 && (
           <button
             className="clear-completed"

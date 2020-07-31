@@ -23,10 +23,12 @@ import {
 } from 'react-relay';
 
 import { TodoApp_viewer } from '../__relay_artifacts__/TodoApp_viewer.graphql';
+import { TodoList_viewer } from '../__relay_artifacts__/TodoList_viewer.graphql';
 
 interface Props {
   relay: RelayProp
   viewer: TodoApp_viewer
+  children: TodoList_viewer
 }
 
 class TodoApp extends React.Component<Props> {
@@ -38,7 +40,6 @@ class TodoApp extends React.Component<Props> {
     );
   };
   render() {
-    const hasTodos = (this.props.viewer.totalCount || 0) > 0;
     return (
       <div>
         <section className="todoapp">
@@ -53,8 +54,8 @@ class TodoApp extends React.Component<Props> {
               placeholder="What needs to be done?"
             />
           </header>
-          <TodoList viewer={this.props.viewer} />
-          {hasTodos && <TodoListFooter viewer={this.props.viewer} />}
+          {this.props.children}
+          <TodoListFooter viewer={this.props.viewer} />
         </section>
         <footer className="info">
           <p>
@@ -78,9 +79,7 @@ export default createFragmentContainer(TodoApp, {
   viewer: graphql`
     fragment TodoApp_viewer on User {
       id,
-      totalCount,
-      ...TodoListFooter_viewer,
-      ...TodoList_viewer,
+      ...TodoListFooter_viewer
     }
   `,
 });

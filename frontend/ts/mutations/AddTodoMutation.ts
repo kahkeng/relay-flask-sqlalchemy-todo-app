@@ -45,9 +45,13 @@ function sharedUpdater(
   user: TodoApp_viewer,
   newEdge: any,
 ) {
-  const userProxy = store.get(user.id)
-  const conn = ConnectionHandler.getConnection(userProxy!, "TodoList_todos")
-  ConnectionHandler.insertEdgeAfter(conn!, newEdge)
+  const userProxy = store.get(user.id);
+  ['any', 'active'].forEach((status) => {
+    const conn = ConnectionHandler.getConnection(userProxy!, "TodoList_todos", { status })
+    if (conn) {
+      ConnectionHandler.insertEdgeAfter(conn!, newEdge)
+    }
+  })
 }
 
 let tempID = 0
