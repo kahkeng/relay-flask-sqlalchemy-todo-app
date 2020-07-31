@@ -2,11 +2,11 @@
   "passPerPreset": true,
   "plugins": [
     ["relay", { "artifactDirectory": "./ts/__relay_artifacts__" }],
-    "transform-runtime"
+    "@babel/plugin-transform-runtime",
+    "@babel/plugin-proposal-class-properties"
   ],
   "presets": [
-    "react",
-    "es2015",
-    "stage-0"
+    "@babel/preset-react",
+    "@babel/preset-env"
   ]
 }

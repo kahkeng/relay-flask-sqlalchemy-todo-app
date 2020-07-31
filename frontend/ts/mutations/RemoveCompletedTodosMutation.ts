@@ -38,11 +38,15 @@ function sharedUpdater(
   user: TodoListFooter_viewer,
   deletedIDs: string[],
 ) {
-  const userProxy = store.get(user.id)
-  const conn = ConnectionHandler.getConnection(userProxy!, "TodoList_todos")
-  deletedIDs.forEach(deletedID =>
-    ConnectionHandler.deleteNode(conn!, deletedID),
-  )
+  const userProxy = store.get(user.id);
+  ['any', 'completed'].forEach((status) => {
+    const conn = ConnectionHandler.getConnection(userProxy!, "TodoList_todos", { status })
+    if (conn) {
+      deletedIDs.forEach(deletedID =>
+        ConnectionHandler.deleteNode(conn!, deletedID),
+      )
+    }
+  })
 }
 
 function commit(
@@ -61,12 +65,23 @@ function commit(
       sharedUpdater(store, user, payload.getValue("deletedTodoIds") as string[])
     },
     optimisticUpdater: store => {
+      const userProxy = store.get(user.id)
+      let deletedIDs
       if (todos && todos.edges) {
-        const deletedIDs = todos.edges
+        deletedIDs = todos.edges
           .filter(edge => edge && edge.node && edge.node.complete)
           .map(edge => (edge && edge.node && edge.node.id) as string)
         sharedUpdater(store, user, deletedIDs)
       }
+      if (!userProxy) throw new Error("assertion failed")
+      const numTodos = (userProxy.getValue('numTodos') as number);
+      if (deletedIDs) {
+        userProxy.setValue(numTodos - deletedIDs.length, 'numTodos');
+      } else {
+        const numCompletedTodos = (userProxy.getValue('numCompletedTodos') as number);
+        userProxy.setValue(numTodos - numCompletedTodos, 'numTodos');
+      }
+      userProxy.setValue(0, 'numCompletedTodos');
     },
   })
 }

@@ -15,6 +15,7 @@ import Todo from './Todo';
 
 import * as React from 'react';
 import {
+  ReactRelayContext,
   createFragmentContainer,
   graphql,
   RelayProp,
@@ -29,13 +30,14 @@ interface Props {
 }
 
 class TodoList extends React.Component<Props> {
+  static contextType = ReactRelayContext
   _handleMarkAllChange = (e: ChangeEvent<HTMLInputElement>) => {
     const complete = e.target.checked;
     MarkAllTodosMutation.commit(
       this.props.relay.environment,
       complete,
-      this.props.viewer.todos,
       this.props.viewer,
+      this.context.variables.status,
     );
   };
   renderTodos() {
@@ -58,6 +60,7 @@ class TodoList extends React.Component<Props> {
     return (
       <section className="main">
         <input
+          id="toggle-all"
           checked={numTodos === numCompletedTodos}
           className="toggle-all"
           onChange={this._handleMarkAllChange}
@@ -78,7 +81,7 @@ export default createFragmentContainer(TodoList, {
   viewer: graphql`
     fragment TodoList_viewer on User {
       todos(
-        first: 2147483647  # max GraphQLInt
+        status: $status, first: 2147483647  # max GraphQLInt
       ) @connection(key: "TodoList_todos") {
         edges {
           node {

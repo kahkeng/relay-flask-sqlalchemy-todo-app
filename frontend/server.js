@@ -10,18 +10,48 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+require('@babel/register')( {
+  extensions: ['.js', '.jsx', '.ts', '.tsx'],
+  presets: [
+      "@babel/preset-env",
+      "@babel/preset-react",
+      "@babel/preset-typescript",
+  ],
+  plugins: [
+      ["@babel/plugin-transform-runtime",
+        {
+          "regenerator": true
+        }
+      ]
+  ]
+} )
+import 'isomorphic-fetch';
+
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import express from 'express';
-import path from 'path';
+import { createProxyMiddleware } from 'http-proxy-middleware';
+import { Resolver } from 'found-relay';
+import { getFarceResult } from 'found/server';
+import ReactDOMServer from 'react-dom/server';
+import RelayServerSSR from 'react-relay-network-modern-ssr/lib/server';
+import serialize from 'serialize-javascript';
 import webpack from 'webpack';
-import WebpackDevServer from 'webpack-dev-server';
+import webpackMiddleware from 'webpack-dev-middleware';
+import path from 'path';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+
+const { createRelayEnvironment } = require('./ts/createRelayEnvironment')
+const { historyMiddlewares, routeConfig } = require('./ts/router')
 
 const APP_PORT = 3000;
 const GRAPHQL_PORT = 5000;
 
-// Serve the Relay app
-const compiler = webpack({
-  entry: ['whatwg-fetch', path.resolve(__dirname, 'ts', 'app.tsx')],
+const app = express();
+
+const webpackConfig = {
+  mode: 'development',
+
+  entry: ['isomorphic-fetch', path.resolve(__dirname, 'ts', 'client.tsx')],
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
   },
@@ -37,19 +67,87 @@ const compiler = webpack({
       },
     ],
   },
+  output: {filename: 'app.js', path: '/'},
   plugins: [
     new ForkTsCheckerWebpackPlugin(),
+    new CopyWebpackPlugin({
+      patterns: [
+        'public/learn.json',
+        'node_modules/todomvc-common/base.css',
+        'node_modules/todomvc-app-css/index.css',
+      ],
+    }),
   ],
-  output: {filename: 'app.js', path: '/'},
+
+  devtool: 'cheap-module-source-map',
+};
+
+app.use(
+  webpackMiddleware(webpack(webpackConfig), {
+    stats: { colors: true },
+  }),
+);
+
+const options = {
+  target: `http://localhost:${GRAPHQL_PORT}`,
+  changeOrigin: true, // needed for virtual hosted sites
+  ws: true, // proxy websockets
+  pathRewrite: {
+  },
+  router: function(req) {
+    return {
+      protocol: 'http:',
+      host: 'localhost',
+      port: GRAPHQL_PORT,
+    }
+  },
+};
+app.use('/graphql', createProxyMiddleware('/graphql', options))
+
+app.use(async (req, res) => {
+  const relaySsr = new RelayServerSSR();
+
+  const { redirect, status, element } = await getFarceResult({
+    url: req.url,
+    historyMiddlewares,
+    routeConfig,
+    resolver: new Resolver(
+      createRelayEnvironment(relaySsr, `http://localhost:${GRAPHQL_PORT}/graphql`),
+    ),
+  });
+
+  if (redirect) {
+    res.redirect(302, redirect.url);
+    return;
+  }
+
+  const appHtml = ReactDOMServer.renderToString(element);
+  const relayData = await relaySsr.getCache();
+
+  res.status(status).send(`
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Relay • TodoMVC</title>
+  <link rel="stylesheet" href="base.css">
+  <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+<div id="root">${appHtml}</div>
+
+<script>
+  window.__RELAY_PAYLOADS__ = ${serialize(relayData, { isJSON: true })};
+</script>
+<script src="/app.js"></script>
+</body>
+
+</html>
+  `);
 });
-const app = new WebpackDevServer(compiler, {
-  contentBase: '/public/',
-  proxy: {'/graphql': `http://localhost:${GRAPHQL_PORT}`},
-  publicPath: '/js/',
-  stats: {colors: true},
-});
-// Serve static resources
-app.use('/', express.static(path.resolve(__dirname, 'public')));
+
 app.listen(APP_PORT, () => {
-  console.log(`App is now running on http://localhost:${APP_PORT}`);
+  console.log(`listening on port ${APP_PORT}`); // eslint-disable-line no-console
 });

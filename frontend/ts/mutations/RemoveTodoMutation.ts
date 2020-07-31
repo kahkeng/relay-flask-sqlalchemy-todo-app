@@ -39,8 +39,13 @@ function sharedUpdater(
   deletedID: string,
 ) {
   const userProxy = store.get(user.id)
-  const conn = ConnectionHandler.getConnection(userProxy!, "TodoList_todos")
-  ConnectionHandler.deleteNode(conn!, deletedID)
+  if (!userProxy) throw new Error("assertion failed");
+  ['any', 'active', 'completed'].forEach((status) => {
+    const conn = ConnectionHandler.getConnection(userProxy, "TodoList_todos", { status })
+    if (conn) {
+      ConnectionHandler.deleteNode(conn, deletedID)
+    }
+  })
 }
 
 function commit(environment: Environment, todo: Todo_todo, user: Todo_viewer) {
@@ -56,6 +61,26 @@ function commit(environment: Environment, todo: Todo_todo, user: Todo_viewer) {
     },
     optimisticUpdater: store => {
       sharedUpdater(store, user, todo.id)
+
+      const userProxy = store.get(user.id)
+      if (!userProxy) throw new Error("assertion failed")
+      const numTodos = userProxy.getValue('numTodos')
+      if (numTodos != null) {
+        userProxy.setValue((numTodos as number) - 1, 'numTodos')
+      }
+      const numCompletedTodos = userProxy.getValue('numCompletedTodos')
+      if (numCompletedTodos != null) {
+        if (todo.complete != null) {
+          if (todo.complete) {
+            userProxy.setValue((numCompletedTodos as number) - 1, 'numCompletedTodos')
+          }
+        } else if (numTodos != null) {
+          // Note this is the old numTodos.
+          if ((numTodos as number) - 1 < (numCompletedTodos as number)) {
+            userProxy.setValue((numTodos as number) - 1, 'numCompletedTodos')
+          }
+        }
+      }
     },
   })
 }

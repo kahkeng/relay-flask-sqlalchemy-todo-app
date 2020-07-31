@@ -13,58 +13,93 @@
 import { commitMutation, graphql } from "react-relay"
 
 import { TodoList_viewer } from "../__relay_artifacts__/TodoList_viewer.graphql"
-import { Environment } from "relay-runtime"
+import {
+  ConnectionHandler,
+  RecordSourceSelectorProxy,
+  Environment,
+} from "relay-runtime"
 import { MarkAllTodosMutation } from "../__relay_artifacts__/MarkAllTodosMutation.graphql"
 
 const mutation = graphql`
-  mutation MarkAllTodosMutation($input: MarkAllTodosInput!) {
+  mutation MarkAllTodosMutation($input: MarkAllTodosInput!, $status: String!) {
     markAllTodos(input: $input) {
+      viewer {
+        todos (status: $status) {
+          edges {
+            node {
+              id
+              complete
+              text
+            }
+          }
+        }
+        id
+        completedCount
+      }
       changedTodos {
         id
         complete
-      }
-      viewer {
-        id
-        completedCount
       }
     }
   }
 `
 
-function getOptimisticResponse(
-  complete: boolean,
-  todos: TodoList_viewer["todos"],
-  user: TodoList_viewer,
-) {
-  const payload: any = { viewer: { id: user.id } }
-  if (todos && todos.edges) {
-    payload.changedTodos = todos.edges
-      .filter(edge => edge && edge.node && edge.node.complete !== complete)
-      .map(edge => ({
-        complete: complete,
-        id: edge && edge.node && edge.node.id,
-      }))
-  }
-  if (user.totalCount != null) {
-    payload.viewer.completedCount = complete ? user.totalCount : 0
-  }
-  return {
-    markAllTodos: payload,
-  }
-}
-
 function commit(
   environment: Environment,
   complete: boolean,
-  todos: TodoList_viewer["todos"],
   user: TodoList_viewer,
+  status: string,
 ) {
   return commitMutation<MarkAllTodosMutation>(environment, {
     mutation,
     variables: {
       input: { complete },
+      status,
     },
-    optimisticResponse: getOptimisticResponse(complete, todos, user),
+
+    updater: store => {
+      const userProxy = store.get(user.id);
+      if (!userProxy) throw new Error("assertion failed")
+      const connection = ConnectionHandler.getConnection(
+        userProxy,
+        'TodoList_todos',
+        { status },
+      );
+      if (!connection) throw new Error("assertion failed")
+      const todoEdges = store
+        .getRootField('markAllTodos')
+        .getLinkedRecord('viewer')
+        .getLinkedRecord('todos', { status })
+        .getLinkedRecords('edges');
+      connection.setLinkedRecords(todoEdges as any, 'edges');
+    },
+
+    optimisticUpdater(store) {
+      const userProxy = store.get(user.id);
+      if (!userProxy) throw new Error("assertion failed")
+      const connection = ConnectionHandler.getConnection(
+        userProxy,
+        'TodoList_todos',
+        { status },
+      );
+      if (!connection) throw new Error("assertion failed")
+
+      if (
+        (complete && status === 'active') ||
+        (!complete && status === 'completed')
+      ) {
+        connection.setLinkedRecords([], 'edges');
+      }
+
+      connection.getLinkedRecords('edges')!.forEach((edge) => {
+        edge.getLinkedRecord('node')!.setValue(complete, 'complete');
+      });
+
+      userProxy.setValue(
+        complete ? userProxy.getValue('numTodos') : 0,
+        'numCompletedTodos',
+      );
+    },
   })
 }
 

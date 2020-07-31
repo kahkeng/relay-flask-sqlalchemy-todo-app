@@ -5,8 +5,7 @@ import { ReaderFragment } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
 export type TodoApp_viewer = {
     readonly id: string;
-    readonly totalCount: number | null;
-    readonly " $fragmentRefs": FragmentRefs<"TodoListFooter_viewer" | "TodoList_viewer">;
+    readonly " $fragmentRefs": FragmentRefs<"TodoListFooter_viewer">;
     readonly " $refType": "TodoApp_viewer";
 };
 export type TodoApp_viewer$data = TodoApp_viewer;
@@ -18,37 +17,26 @@ export type TodoApp_viewer$key = {
 
 
 const node: ReaderFragment = {
-  "kind": "Fragment",
-  "name": "TodoApp_viewer",
-  "type": "User",
-  "metadata": null,
   "argumentDefinitions": [],
+  "kind": "Fragment",
+  "metadata": null,
+  "name": "TodoApp_viewer",
   "selections": [
     {
-      "kind": "ScalarField",
       "alias": null,
+      "args": null,
+      "kind": "ScalarField",
       "name": "id",
-      "args": null,
       "storageKey": null
     },
     {
-      "kind": "ScalarField",
-      "alias": null,
-      "name": "totalCount",
       "args": null,
-      "storageKey": null
-    },
-    {
       "kind": "FragmentSpread",
-      "name": "TodoListFooter_viewer",
-      "args": null
-    },
-    {
-      "kind": "FragmentSpread",
-      "name": "TodoList_viewer",
-      "args": null
+      "name": "TodoListFooter_viewer"
     }
-  ]
+  ],
+  "type": "User",
+  "abstractKey": null
 };
-(node as any).hash = 'b9743417c7b5ef2bbda96cf675aa9eb4';
+(node as any).hash = '8ba92a6f137d22386635f08a47260bc3';
 export default node;

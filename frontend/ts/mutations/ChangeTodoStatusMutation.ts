@@ -11,7 +11,11 @@
  */
 
 import { commitMutation, graphql } from "react-relay"
-import { Environment } from "relay-runtime"
+import {
+  ConnectionHandler,
+  RecordSourceSelectorProxy,
+  Environment,
+} from "relay-runtime"
 
 import { Todo_todo } from "../__relay_artifacts__/Todo_todo.graphql"
 import { Todo_viewer } from "../__relay_artifacts__/Todo_viewer.graphql"
@@ -31,6 +35,26 @@ const mutation = graphql`
     }
   }
 `
+
+function sharedUpdater(
+  store: RecordSourceSelectorProxy,
+  user: Todo_viewer,
+  todoProxy: any,
+) {
+  // In principle this could add to the active connection, but such an
+  // interaction is not possible from the front end.
+  const userProxy = store.get(user.id);
+  if (!userProxy) throw new Error("assertion failed")
+  const status = todoProxy.getValue('complete') ? 'active' : 'completed';
+  const connection = ConnectionHandler.getConnection(
+    userProxy,
+    'TodoList_todos',
+    { status },
+  );
+  if (connection) {
+    ConnectionHandler.deleteNode(connection, todoProxy.getValue('id'));
+  }
+}
 
 function getOptimisticResponse(
   complete: boolean,
@@ -67,6 +91,11 @@ function commit(
     mutation,
     variables: {
       input: { complete, id: todo.id },
+    },
+    updater: store => {
+      const payload = store.getRootField("changeTodoStatus")
+      if (!payload) throw new Error("assertion failed")
+      sharedUpdater(store, user, payload.getLinkedRecord("todo"))
     },
     optimisticResponse: getOptimisticResponse(complete, todo, user),
   })
