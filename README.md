@@ -1,10 +1,12 @@
-# TodoMVC using React/Relay/Typescript frontend, Flask/Graphene/SQLAlchemy backend
+# TodoMVC using React/Relay/Found/SSR/Typescript frontend, Flask/Graphene/SQLAlchemy backend
 
 ## Motivation
 
 The [Relay](https://relay.dev) quick start [guide](https://relay.dev/docs/en/quick-start-guide) references an [example todo list app](https://github.com/relayjs/relay-examples/tree/master/todo), but it is uses JavaScript with a mocked (non-persistent) database. There is a TypeScript [port](https://github.com/relay-tools/relay-compiler-language-typescript/tree/master/example) of this example app, and some online guides of using [Flask as backend to React](https://blog.miguelgrinberg.com/post/how-to-create-a-react--flask-project) and [Graphene/SQLAlchemy as a backend to GraphQL/Relay](https://docs.graphene-python.org/projects/sqlalchemy/en/latest/tutorial/), but nothing that combines all of these into fully-featured example app (e.g. with mutations). The closest example was an implementation with a [Graphene/Django backend](https://github.com/smbolton/relay-examples-todo-graphene).
 
-This repository (released with MIT License) adapts code from all the above sources to provide an example [TodoMVC](http://todomvc.com) app implementation that utilizes the following tech stack: Relay, Typescript, Flask, Graphene, SQLAlchemy. It could serve as a starting point for further customization.
+We add on routing and server-side rendering (SSR) with Found/Found-Relay by referencing [this example](https://github.com/relay-tools/found-relay/tree/master/examples/todomvc-universal).
+
+This repository (released with MIT License) adapts code from all the above sources to provide an example [TodoMVC](http://todomvc.com) app implementation that utilizes the following tech stack: Relay, Found, Typescript, Flask, Graphene, SQLAlchemy. It could serve as a starting point for further customization. For an earlier version without Found/SSR, check out this [branch](https://github.com/kahkeng/relay-flask-sqlalchemy-todo-app/tree/without_found_ssr).
 
 ## Prerequisites
 
@@ -70,3 +72,4 @@ Visit http://localhost:3000
 * https://github.com/relay-tools/relay-compiler-language-typescript
 * https://docs.graphene-python.org/projects/sqlalchemy/en/latest/tutorial/
 * https://github.com/smbolton/relay-examples-todo-graphene
+* https://github.com/relay-tools/found-relay/tree/master/examples/todomvc-universal
