@@ -87,6 +87,15 @@ query {
         }
       }
     }
+    activeTodos: todos (status: "active") {
+      edges {
+        node {
+          id
+          complete
+          text
+        }
+      }
+    }
   }
 }
 ''')
@@ -124,6 +133,11 @@ query {
                 'completedTodos': {
                     'edges': [
                         completed_todo,
+                    ],
+                },
+                'activeTodos': {
+                    'edges': [
+                        remaining_todo,
                     ],
                 },
             },

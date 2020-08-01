@@ -59,8 +59,8 @@ class User(SQLAlchemyObjectType):
     def resolve_todos(root, info, **kwargs):
         qs = root.todos
         status = kwargs.get('status', None)
-        if status and status == 'completed':
-            qs = qs.filter(TodoModel.complete == True)
+        if status and status != 'any':
+            qs = qs.filter(TodoModel.complete == (status == 'completed'))
         return qs.all()
 
     @staticmethod
