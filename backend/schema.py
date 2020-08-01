@@ -153,7 +153,7 @@ class ChangeTodoStatus(relay.ClientIDMutation):
 
 
 class MarkAllTodos(relay.ClientIDMutation):
-    # mutation MarkAllTodosMutation($input: MarkAllTodosInput!) {
+    # mutation MarkAllTodosMutation($input: MarkAllTodosInput!, $status: String!) {
     #   markAllTodos(input: $input) {
     #     changedTodos { id complete }
     #     viewer { id completedCount }
