@@ -6,7 +6,6 @@
     "noEmit": true,
     "moduleResolution": "node",
     "strict": true,
-    "target": "es2015",
-    "noImplicitAny": false
+    "target": "es2015"
   }
 }

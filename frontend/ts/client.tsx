@@ -1,4 +1,5 @@
 import BrowserProtocol from 'farce/BrowserProtocol';
+// @ts-ignore
 import { Resolver } from 'found-relay';
 import createInitialFarceRouter from 'found/createInitialFarceRouter';
 import * as React from "react";
