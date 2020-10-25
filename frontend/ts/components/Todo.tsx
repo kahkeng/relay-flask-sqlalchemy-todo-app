@@ -11,8 +11,11 @@
  */
 
 import ChangeTodoStatusMutation from '../mutations/ChangeTodoStatusMutation';
+import ChangeTodoStatusSubscription from '../subscriptions/ChangeTodoStatusSubscription';
 import RemoveTodoMutation from '../mutations/RemoveTodoMutation';
+import RemoveTodoSubscription from '../subscriptions/RemoveTodoSubscription';
 import RenameTodoMutation from '../mutations/RenameTodoMutation';
+import RenameTodoSubscription from '../subscriptions/RenameTodoSubscription';
 import TodoTextInput from './TodoTextInput';
 
 import * as React from 'react';
@@ -21,6 +24,7 @@ import {
   graphql,
   RelayProp,
 } from 'react-relay';
+import { Disposable } from 'relay-runtime';
 
 import classnames from 'classnames';
 
@@ -34,10 +38,15 @@ interface Props {
   todo: Todo_todo
   viewer: Todo_viewer
 }
+interface State {
+  isEditing: boolean
+  subscriptions: Disposable[]
+}
 
-class Todo extends React.Component<Props> {
+class Todo extends React.Component<Props, State> {
   state = {
     isEditing: false,
+    subscriptions: [] as Disposable[],
   };
   _handleCompleteChange = (e: ChangeEvent<HTMLInputElement>) => {
     const complete = e.target.checked;
@@ -90,6 +99,29 @@ class Todo extends React.Component<Props> {
         onSave={this._handleTextInputSave}
       />
     );
+  }
+  componentDidMount() {
+    this.setState({
+      subscriptions: [
+        ChangeTodoStatusSubscription.subscribe(
+          this.props.relay.environment,
+          this.props.todo,
+          this.props.viewer,
+        ),
+        RemoveTodoSubscription.subscribe(
+          this.props.relay.environment,
+          this.props.viewer,
+        ),
+        RenameTodoSubscription.subscribe(
+          this.props.relay.environment,
+        ),
+      ],
+    });
+  }
+  componentWillUnmount() {
+    this.state.subscriptions.forEach((subscription) => {
+      subscription.dispose();
+    });
   }
   render() {
     return (

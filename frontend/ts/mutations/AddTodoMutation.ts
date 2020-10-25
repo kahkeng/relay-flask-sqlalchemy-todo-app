@@ -65,6 +65,7 @@ function commit(environment: Environment, text: string, user: TodoApp_viewer) {
         clientMutationId: (tempID++).toString(),
       },
     },
+    /* NB: we disable the updater because we rely on subscriptions to update these.
     updater: store => {
       const payload = store.getRootField("addTodo")!
       const newEdge = payload.getLinkedRecord("todoEdge")
@@ -84,6 +85,7 @@ function commit(environment: Environment, text: string, user: TodoApp_viewer) {
         "totalCount",
       )
     },
+    */
   })
 }
 

@@ -37,6 +37,7 @@
     "react-relay-network-modern": "^4.7.4",
     "react-relay-network-modern-ssr": "^1.4.0",
     "relay-runtime": "^10.0.1",
+    "subscriptions-transport-ws": "^0.9.18",
     "todomvc-app-css": "^2.1.0",
     "todomvc-common": "^1.0.3",
     "webpack": "^4.44.1",

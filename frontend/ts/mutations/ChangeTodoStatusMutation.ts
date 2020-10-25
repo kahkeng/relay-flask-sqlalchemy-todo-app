@@ -91,10 +91,12 @@ function commit(
     variables: {
       input: { complete, id: todo.id },
     },
+    /* NB: we disable the updater because we rely on subscriptions to update these.
     updater: store => {
       const payload = store.getRootField("changeTodoStatus")!
       sharedUpdater(store, user, payload.getLinkedRecord("todo"))
     },
+    */
     optimisticResponse: getOptimisticResponse(complete, todo, user),
   })
 }

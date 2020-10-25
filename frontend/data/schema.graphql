@@ -1,6 +1,7 @@
 schema {
   query: Query
   mutation: Mutation
+  subscription: Subscription
 }
 
 input AddTodoInput {
@@ -14,6 +15,17 @@ type AddTodoPayload {
   clientMutationId: String
 }
 
+input AddTodoSubscriptionInput {
+  status: String!
+  clientSubscriptionId: String
+}
+
+type AddTodoSubscriptionPayload {
+  todoEdge: TodoEdge
+  viewer: User
+  clientSubscriptionId: String
+}
+
 input ChangeTodoStatusInput {
   complete: Boolean!
   id: ID!
@@ -24,6 +36,28 @@ type ChangeTodoStatusPayload {
   todo: Todo
   viewer: User
   clientMutationId: String
+}
+
+input ChangeTodoStatusSubscriptionInput {
+  id: ID!
+  clientSubscriptionId: String
+}
+
+type ChangeTodoStatusSubscriptionPayload {
+  todo: Todo
+  viewer: User
+  clientSubscriptionId: String
+}
+
+input InsertTodoSubscriptionInput {
+  status: String!
+  clientSubscriptionId: String
+}
+
+type InsertTodoSubscriptionPayload {
+  todoEdge: TodoEdge
+  viewer: User
+  clientSubscriptionId: String
 }
 
 input MarkAllTodosInput {
@@ -87,6 +121,16 @@ type RemoveTodoPayload {
   clientMutationId: String
 }
 
+input RemoveTodoSubscriptionInput {
+  clientSubscriptionId: String
+}
+
+type RemoveTodoSubscriptionPayload {
+  deletedTodoId: ID
+  viewer: User
+  clientSubscriptionId: String
+}
+
 input RenameTodoInput {
   id: ID!
   text: String!
@@ -96,6 +140,23 @@ input RenameTodoInput {
 type RenameTodoPayload {
   todo: Todo
   clientMutationId: String
+}
+
+input RenameTodoSubscriptionInput {
+  clientSubscriptionId: String
+}
+
+type RenameTodoSubscriptionPayload {
+  todo: Todo
+  clientSubscriptionId: String
+}
+
+type Subscription {
+  addTodo(input: AddTodoSubscriptionInput!): AddTodoSubscriptionPayload
+  changeTodoStatus(input: ChangeTodoStatusSubscriptionInput!): ChangeTodoStatusSubscriptionPayload
+  insertTodo(input: InsertTodoSubscriptionInput!): InsertTodoSubscriptionPayload
+  removeTodo(input: RemoveTodoSubscriptionInput!): RemoveTodoSubscriptionPayload
+  renameTodo(input: RenameTodoSubscriptionInput!): RenameTodoSubscriptionPayload
 }
 
 type Todo implements Node {

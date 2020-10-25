@@ -16,7 +16,7 @@ export type TodoList_viewer = {
     readonly id: string;
     readonly totalCount: number | null;
     readonly completedCount: number | null;
-    readonly " $fragmentRefs": FragmentRefs<"Todo_viewer">;
+    readonly " $fragmentRefs": FragmentRefs<"Todo_viewer" | "StatusSubscriber_viewer">;
     readonly " $refType": "TodoList_viewer";
 };
 export type TodoList_viewer$data = TodoList_viewer;
@@ -167,11 +167,16 @@ return {
       "args": null,
       "kind": "FragmentSpread",
       "name": "Todo_viewer"
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "StatusSubscriber_viewer"
     }
   ],
   "type": "User",
   "abstractKey": null
 };
 })();
-(node as any).hash = '31f94e3fbd626139e0771e7c35f178ca';
+(node as any).hash = 'e80a4ab6f10737846e465fe3772953ec';
 export default node;

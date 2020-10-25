@@ -28,6 +28,11 @@ query router_TodoList_Query(
   }
 }
 
+fragment StatusSubscriber_viewer on User {
+  id
+  totalCount
+}
+
 fragment TodoList_viewer on User {
   todos(status: $status, first: 2147483647) {
     edges {
@@ -48,6 +53,7 @@ fragment TodoList_viewer on User {
   totalCount
   completedCount
   ...Todo_viewer
+  ...StatusSubscriber_viewer
 }
 
 fragment Todo_todo on Todo {
@@ -250,12 +256,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "c6ea46c1db1fb09e4e8ba389edb80ccf",
+    "cacheID": "1d66af43845d8a84272386e00bd6cd9f",
     "id": null,
     "metadata": {},
     "name": "router_TodoList_Query",
     "operationKind": "query",
-    "text": "query router_TodoList_Query(\n  $status: String!\n) {\n  viewer {\n    ...TodoList_viewer\n    id\n  }\n}\n\nfragment TodoList_viewer on User {\n  todos(status: $status, first: 2147483647) {\n    edges {\n      node {\n        id\n        complete\n        ...Todo_todo\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n  totalCount\n  completedCount\n  ...Todo_viewer\n}\n\nfragment Todo_todo on Todo {\n  complete\n  id\n  text\n}\n\nfragment Todo_viewer on User {\n  id\n  totalCount\n  completedCount\n}\n"
+    "text": "query router_TodoList_Query(\n  $status: String!\n) {\n  viewer {\n    ...TodoList_viewer\n    id\n  }\n}\n\nfragment StatusSubscriber_viewer on User {\n  id\n  totalCount\n}\n\nfragment TodoList_viewer on User {\n  todos(status: $status, first: 2147483647) {\n    edges {\n      node {\n        id\n        complete\n        ...Todo_todo\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n  totalCount\n  completedCount\n  ...Todo_viewer\n  ...StatusSubscriber_viewer\n}\n\nfragment Todo_todo on Todo {\n  complete\n  id\n  text\n}\n\nfragment Todo_viewer on User {\n  id\n  totalCount\n  completedCount\n}\n"
   }
 };
 })();

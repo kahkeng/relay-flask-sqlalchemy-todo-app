@@ -53,10 +53,12 @@ function commit(environment: Environment, todo: Todo_todo, user: Todo_viewer) {
     variables: {
       input: { id: todo.id },
     },
+    /* NB: we disable the updater because we rely on subscriptions to update these.
     updater: store => {
       const payload = store.getRootField("removeTodo")!
       sharedUpdater(store, user, payload.getValue("deletedTodoId") as string)
     },
+    */
     optimisticUpdater: store => {
       sharedUpdater(store, user, todo.id)
 

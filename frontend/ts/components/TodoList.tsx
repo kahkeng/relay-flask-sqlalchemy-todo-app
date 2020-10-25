@@ -24,6 +24,8 @@ import {
 import { TodoList_viewer } from '../__relay_artifacts__/TodoList_viewer.graphql';
 import { ChangeEvent } from 'react';
 
+import StatusSubscriber from './StatusSubscriber';
+
 interface Props {
   relay: RelayProp,
   viewer: TodoList_viewer
@@ -31,6 +33,7 @@ interface Props {
 
 class TodoList extends React.Component<Props> {
   static contextType = ReactRelayContext
+
   _handleMarkAllChange = (e: ChangeEvent<HTMLInputElement>) => {
     const complete = e.target.checked;
     MarkAllTodosMutation.commit(
@@ -68,6 +71,11 @@ class TodoList extends React.Component<Props> {
         <ul className="todo-list">
           {this.renderTodos()}
         </ul>
+        <StatusSubscriber
+          key={this.context.variables.status}
+          status={this.context.variables.status}
+          viewer={this.props.viewer}
+        />
       </section>
     );
   }
@@ -91,6 +99,7 @@ export default createFragmentContainer(TodoList, {
       totalCount,
       completedCount,
       ...Todo_viewer,
+      ...StatusSubscriber_viewer,
     }
   `,
 });
