@@ -60,12 +60,11 @@ function commit(
       input: {},
     },
     updater: store => {
-      const payload = store.getRootField("removeCompletedTodos")
-      if (!payload) throw new Error("assertion failed")
+      const payload = store.getRootField("removeCompletedTodos")!
       sharedUpdater(store, user, payload.getValue("deletedTodoIds") as string[])
     },
     optimisticUpdater: store => {
-      const userProxy = store.get(user.id)
+      const userProxy = store.get(user.id)!
       let deletedIDs
       if (todos && todos.edges) {
         deletedIDs = todos.edges
@@ -73,7 +72,6 @@ function commit(
           .map(edge => (edge && edge.node && edge.node.id) as string)
         sharedUpdater(store, user, deletedIDs)
       }
-      if (!userProxy) throw new Error("assertion failed")
       const numTodos = (userProxy.getValue('numTodos') as number);
       if (deletedIDs) {
         userProxy.setValue(numTodos - deletedIDs.length, 'numTodos');

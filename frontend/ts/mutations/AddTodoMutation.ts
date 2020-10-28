@@ -66,8 +66,7 @@ function commit(environment: Environment, text: string, user: TodoApp_viewer) {
       },
     },
     updater: store => {
-      const payload = store.getRootField("addTodo")
-      if (!payload) throw new Error("assertion failed")
+      const payload = store.getRootField("addTodo")!
       const newEdge = payload.getLinkedRecord("todoEdge")
       sharedUpdater(store, user, newEdge)
     },
@@ -79,8 +78,7 @@ function commit(environment: Environment, text: string, user: TodoApp_viewer) {
       const newEdge = store.create("client:newEdge:" + tempID++, "TodoEdge")
       newEdge.setLinkedRecord(node, "node")
       sharedUpdater(store, user, newEdge)
-      const userProxy = store.get(user.id)
-      if (!userProxy) throw new Error("assertion failed")
+      const userProxy = store.get(user.id)!
       userProxy.setValue(
         (userProxy.getValue("totalCount") as number) + 1,
         "totalCount",

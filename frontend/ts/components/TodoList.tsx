@@ -41,12 +41,8 @@ class TodoList extends React.Component<Props> {
     );
   };
   renderTodos() {
-    if (!this.props.viewer.todos || !this.props.viewer.todos.edges) {
-      throw new Error('assertion failed');
-    }
-    return this.props.viewer.todos.edges.map(edge => {
-      const node = edge && edge.node;
-      if (!node) throw new Error('assertion failed');
+    return this.props.viewer.todos!.edges!.map(edge => {
+      const node = edge!.node!;
       return <Todo
         key={node.id}
         todo={node}

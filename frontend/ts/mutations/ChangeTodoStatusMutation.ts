@@ -43,8 +43,7 @@ function sharedUpdater(
 ) {
   // In principle this could add to the active connection, but such an
   // interaction is not possible from the front end.
-  const userProxy = store.get(user.id);
-  if (!userProxy) throw new Error("assertion failed")
+  const userProxy = store.get(user.id)!;
   const status = todoProxy.getValue('complete') ? 'active' : 'completed';
   const connection = ConnectionHandler.getConnection(
     userProxy,
@@ -93,8 +92,7 @@ function commit(
       input: { complete, id: todo.id },
     },
     updater: store => {
-      const payload = store.getRootField("changeTodoStatus")
-      if (!payload) throw new Error("assertion failed")
+      const payload = store.getRootField("changeTodoStatus")!
       sharedUpdater(store, user, payload.getLinkedRecord("todo"))
     },
     optimisticResponse: getOptimisticResponse(complete, todo, user),

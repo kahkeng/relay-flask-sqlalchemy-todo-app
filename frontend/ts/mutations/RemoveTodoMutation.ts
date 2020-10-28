@@ -38,8 +38,7 @@ function sharedUpdater(
   user: Todo_viewer,
   deletedID: string,
 ) {
-  const userProxy = store.get(user.id)
-  if (!userProxy) throw new Error("assertion failed");
+  const userProxy = store.get(user.id)!;
   ['any', 'active', 'completed'].forEach((status) => {
     const conn = ConnectionHandler.getConnection(userProxy, "TodoList_todos", { status })
     if (conn) {
@@ -55,15 +54,13 @@ function commit(environment: Environment, todo: Todo_todo, user: Todo_viewer) {
       input: { id: todo.id },
     },
     updater: store => {
-      const payload = store.getRootField("removeTodo")
-      if (!payload) throw new Error("assertion failed")
+      const payload = store.getRootField("removeTodo")!
       sharedUpdater(store, user, payload.getValue("deletedTodoId") as string)
     },
     optimisticUpdater: store => {
       sharedUpdater(store, user, todo.id)
 
-      const userProxy = store.get(user.id)
-      if (!userProxy) throw new Error("assertion failed")
+      const userProxy = store.get(user.id)!
       const numTodos = userProxy.getValue('numTodos')
       if (numTodos != null) {
         userProxy.setValue((numTodos as number) - 1, 'numTodos')

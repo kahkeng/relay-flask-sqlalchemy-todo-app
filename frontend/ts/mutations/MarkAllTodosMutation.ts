@@ -58,14 +58,12 @@ function commit(
     },
 
     updater: store => {
-      const userProxy = store.get(user.id);
-      if (!userProxy) throw new Error("assertion failed")
+      const userProxy = store.get(user.id)!;
       const connection = ConnectionHandler.getConnection(
         userProxy,
         'TodoList_todos',
         { status },
-      );
-      if (!connection) throw new Error("assertion failed")
+      )!;
       const todoEdges = store
         .getRootField('markAllTodos')
         .getLinkedRecord('viewer')
@@ -75,14 +73,12 @@ function commit(
     },
 
     optimisticUpdater(store) {
-      const userProxy = store.get(user.id);
-      if (!userProxy) throw new Error("assertion failed")
+      const userProxy = store.get(user.id)!;
       const connection = ConnectionHandler.getConnection(
         userProxy,
         'TodoList_todos',
         { status },
-      );
-      if (!connection) throw new Error("assertion failed")
+      )!;
 
       if (
         (complete && status === 'active') ||
