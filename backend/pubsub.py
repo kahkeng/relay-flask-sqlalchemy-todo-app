@@ -1,6 +1,11 @@
 # Code taken from https://github.com/hballard/graphql-ws/tree/pubsub under MIT license.
-# Redis version is also available from the above branch.
 
+import os
+
+import gevent
+import gevent.socket
+import pickle
+import redis
 from rx.subjects import Subject
 from rx import config
 
@@ -49,3 +54,52 @@ class GeventRxPubsub(object):
     def unsubscribe(self, channel):
         if channel in self.subscriptions:
             del self.subscriptions[channel]
+
+
+class GeventRxRedisPubsub(object):
+
+    def __init__(self, host='localhost', port=6379, password=None, *args, **kwargs):
+        if password is None:
+            password = os.getenv('REDIS_PASSWORD')
+        redis.connection.socket = gevent.socket
+        self.redis = redis.StrictRedis(host, port, password=password, *args, **kwargs)
+        self.pubsub = self.redis.pubsub(ignore_subscribe_messages=True)
+        self.subscriptions = {}
+        self.greenlet = None
+
+    def publish(self, channel, payload):
+        self.redis.publish(channel, pickle.dumps(payload))
+
+    def subscribe_to_channel(self, channel):
+        if channel in self.subscriptions:
+            return self.subscriptions[channel]
+        else:
+            self.pubsub.subscribe(channel)
+            subject = Subject()
+            # monkeypatch Subject to unsubscribe pubsub on observable
+            # subscription.dispose()
+            subject.observers = SubjectObserversWrapper(self, channel)
+            self.subscriptions[channel] = subject
+            if not self.greenlet:
+                self.greenlet = gevent.spawn(self._wait_and_get_messages)
+            return subject
+
+    def unsubscribe(self, channel):
+        if channel in self.subscriptions:
+            self.pubsub.unsubscribe(channel)
+            del self.subscriptions[channel]
+        if not self.subscriptions:
+            self.greenlet.kill()
+
+    def _wait_and_get_messages(self):
+        while True:
+            msg = self.pubsub.get_message()
+            if msg:
+                if isinstance(msg['channel'], bytes):
+                    channel = msg['channel'].decode()
+                else:
+                    channel = msg['channel']
+                if channel in self.subscriptions:
+                    self.subscriptions[channel].on_next(pickle.loads(
+                        msg['data']))
+            gevent.sleep(.001)

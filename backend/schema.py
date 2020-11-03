@@ -28,10 +28,10 @@ from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
 from models import db_session, User as UserModel, Todo as TodoModel
 import graphql_relay
 
-from pubsub import GeventRxPubsub
+from pubsub import GeventRxRedisPubsub
 import relay_helper
 
-pubsub = GeventRxPubsub()
+pubsub = GeventRxRedisPubsub()
 
 # Uncomment these to show sql queries
 #import logging
