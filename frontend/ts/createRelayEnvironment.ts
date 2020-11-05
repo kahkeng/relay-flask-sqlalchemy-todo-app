@@ -10,7 +10,9 @@ import RelayClientSSR from 'react-relay-network-modern-ssr/lib/client';
 
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
-const GRAPHQL_SUBSCRIPTION_ENDPOINT = 'ws://localhost:5000/subscriptions';
+import config from './config'
+
+const GRAPHQL_SUBSCRIPTION_ENDPOINT = `ws://${config.BACKEND_HOST}:${config.BACKEND_PORT}/subscriptions`;
 
 export function createRelayEnvironment(relaySsr: RelayServerSSR | RelayClientSSR, url: string) {
   let options

@@ -42,9 +42,7 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 
 const { createRelayEnvironment } = require('./ts/createRelayEnvironment')
 const { historyMiddlewares, routeConfig } = require('./ts/router')
-
-const APP_PORT = 3000;
-const GRAPHQL_PORT = 5000;
+const config = require('./ts/config').default
 
 const app = express();
 
@@ -89,7 +87,7 @@ app.use(
 );
 
 const options = {
-  target: `http://localhost:${GRAPHQL_PORT}`,
+  target: `http://${config.BACKEND_HOST}:${config.BACKEND_PORT}`,
   changeOrigin: true, // needed for virtual hosted sites
   ws: true, // proxy websockets
   pathRewrite: {
@@ -97,8 +95,8 @@ const options = {
   router: function(req) {
     return {
       protocol: 'http:',
-      host: 'localhost',
-      port: GRAPHQL_PORT,
+      host: config.BACKEND_HOST,
+      port: config.BACKEND_PORT,
     }
   },
 };
@@ -112,7 +110,7 @@ app.use(async (req, res) => {
     historyMiddlewares,
     routeConfig,
     resolver: new Resolver(
-      createRelayEnvironment(relaySsr, `http://localhost:${GRAPHQL_PORT}/graphql`),
+      createRelayEnvironment(relaySsr, `http://${config.BACKEND_HOST}:${config.BACKEND_PORT}/graphql`),
     ),
   });
 
@@ -148,6 +146,6 @@ app.use(async (req, res) => {
   `);
 });
 
-app.listen(APP_PORT, () => {
-  console.log(`listening on port ${APP_PORT}`); // eslint-disable-line no-console
+app.listen(config.APP_PORT, () => {
+  console.log(`listening on port ${config.APP_PORT}`); // eslint-disable-line no-console
 });
