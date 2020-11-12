@@ -11,7 +11,6 @@
  */
 
 import MarkAllTodosMutation from '../mutations/MarkAllTodosMutation';
-import Todo from './Todo';
 
 import * as React from 'react';
 import {
@@ -24,6 +23,7 @@ import {
 import { TodoList_viewer } from '../__relay_artifacts__/TodoList_viewer.graphql';
 import { ChangeEvent } from 'react';
 
+import TodoListPaged from './TodoListPaged';
 import StatusSubscriber from './StatusSubscriber';
 
 interface Props {
@@ -43,16 +43,6 @@ class TodoList extends React.Component<Props> {
       this.context.variables.status,
     );
   };
-  renderTodos() {
-    return this.props.viewer.todos!.edges!.map(edge => {
-      const node = edge!.node!;
-      return <Todo
-        key={node.id}
-        todo={node}
-        viewer={this.props.viewer}
-      />
-    });
-  }
   render() {
     const numTodos = this.props.viewer.totalCount;
     const numCompletedTodos = this.props.viewer.completedCount;
@@ -68,9 +58,7 @@ class TodoList extends React.Component<Props> {
         <label htmlFor="toggle-all">
           Mark all as complete
         </label>
-        <ul className="todo-list">
-          {this.renderTodos()}
-        </ul>
+        <TodoListPaged viewer={this.props.viewer}/>
         <StatusSubscriber
           key={this.context.variables.status}
           status={this.context.variables.status}
@@ -84,21 +72,10 @@ class TodoList extends React.Component<Props> {
 export default createFragmentContainer(TodoList, {
   viewer: graphql`
     fragment TodoList_viewer on User {
-      todos(
-        status: $status, first: 2147483647  # max GraphQLInt
-      ) @connection(key: "TodoList_todos") {
-        edges {
-          node {
-            id,
-            complete,
-            ...Todo_todo,
-          },
-        },
-      },
       id,
       totalCount,
       completedCount,
-      ...Todo_viewer,
+      ...TodoListPaged_viewer,
       ...StatusSubscriber_viewer,
     }
   `,

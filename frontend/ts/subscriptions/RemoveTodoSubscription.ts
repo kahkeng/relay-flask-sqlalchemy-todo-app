@@ -41,7 +41,7 @@ function subscribe(environment: Environment, user: Todo_viewer): Disposable {
       const deletedID = rootField.getValue('deletedTodoId') as string
       const userProxy = store.get(user.id)!;
       ['any', 'active', 'completed'].forEach((status) => {
-        const conn = ConnectionHandler.getConnection(userProxy, "TodoList_todos", { status })
+        const conn = ConnectionHandler.getConnection(userProxy, "TodoListPaged_todos", { status })
         if (conn) {
           ConnectionHandler.deleteNode(conn, deletedID)
         }

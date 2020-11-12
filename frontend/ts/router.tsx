@@ -7,10 +7,16 @@ import { graphql } from 'react-relay';
 import TodoApp from './components/TodoApp';
 import TodoList from './components/TodoList';
 
+import config from './config';
+
 export const historyMiddlewares = [queryMiddleware];
 
 const TodoListQuery = graphql`
-  query router_TodoList_Query($status: String!) {
+  query router_TodoList_Query(
+    $status: String!,
+    $count: Int!,
+    $after: String,
+  ) {
     viewer {
       ...TodoList_viewer
     }
@@ -32,8 +38,13 @@ export const routeConfig = makeRouteConfig(
     <Route
       Component={TodoList}
       query={TodoListQuery}
-      prepareVariables={(params: any) => ({ ...params, status: 'any' })}
+      prepareVariables={(params: any) => ({ ...params, status: 'any', count: config.PAGE_SIZE })}
     />
-    <Route path=":status" Component={TodoList} query={TodoListQuery} />
+    <Route
+      path=":status"
+      Component={TodoList}
+      query={TodoListQuery}
+      prepareVariables={(params: any) => ({ ...params, count: config.PAGE_SIZE })}
+    />
   </Route>,
 );

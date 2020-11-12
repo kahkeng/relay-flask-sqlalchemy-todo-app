@@ -56,13 +56,13 @@ function subscribe(environment: Environment, user: StatusSubscriber_viewer, stat
 
       const todoEdge = rootField.getLinkedRecord('todoEdge');
       if (todoEdge) {
-        const conn = ConnectionHandler.getConnection(viewer, 'TodoList_todos', { status })!;
+        const conn = ConnectionHandler.getConnection(viewer, 'TodoListPaged_todos', { status })!;
         // TODO: somehow, we need to create a new edge here. Inserting the edge above
         // causes issues with duplicate keys.
         //ConnectionHandler.insertEdgeAfter(conn, todoEdge);
         const todo = todoEdge.getLinkedRecord('node')!;
         const edge = ConnectionHandler.createEdge(store, conn, todo, 'todoEdge');
-        ConnectionHandler.insertEdgeAfter(conn, edge);
+        ConnectionHandler.insertEdgeBefore(conn, edge);
       }
     },
   };

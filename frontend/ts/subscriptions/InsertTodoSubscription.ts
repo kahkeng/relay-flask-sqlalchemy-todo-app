@@ -57,7 +57,7 @@ function subscribe(environment: Environment, user: StatusSubscriber_viewer, stat
       )
 
       const cursor = todoEdge.getValue('cursor')!;
-      const conn = ConnectionHandler.getConnection(viewer, 'TodoList_todos', { status })!;
+      const conn = ConnectionHandler.getConnection(viewer, 'TodoListPaged_todos', { status })!;
       // TODO: somehow, we need to create a new edge here. Inserting the edge above
       // causes issues with duplicate keys.
       // Also, cursor-based insertion sometimes doesn't seem to work properly.

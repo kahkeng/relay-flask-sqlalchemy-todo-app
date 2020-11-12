@@ -3,38 +3,33 @@
 
 import { ConcreteRequest } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
-export type router_TodoList_QueryVariables = {
+export type TodoListPagedForwardQueryVariables = {
     status: string;
     count: number;
     after?: string | null;
 };
-export type router_TodoList_QueryResponse = {
+export type TodoListPagedForwardQueryResponse = {
     readonly viewer: {
-        readonly " $fragmentRefs": FragmentRefs<"TodoList_viewer">;
+        readonly " $fragmentRefs": FragmentRefs<"TodoListPaged_viewer">;
     } | null;
 };
-export type router_TodoList_Query = {
-    readonly response: router_TodoList_QueryResponse;
-    readonly variables: router_TodoList_QueryVariables;
+export type TodoListPagedForwardQuery = {
+    readonly response: TodoListPagedForwardQueryResponse;
+    readonly variables: TodoListPagedForwardQueryVariables;
 };
 
 
 
 /*
-query router_TodoList_Query(
+query TodoListPagedForwardQuery(
   $status: String!
   $count: Int!
   $after: String
 ) {
   viewer {
-    ...TodoList_viewer
+    ...TodoListPaged_viewer
     id
   }
-}
-
-fragment StatusSubscriber_viewer on User {
-  id
-  totalCount
 }
 
 fragment TodoListPaged_viewer on User {
@@ -54,14 +49,6 @@ fragment TodoListPaged_viewer on User {
     }
   }
   ...Todo_viewer
-}
-
-fragment TodoList_viewer on User {
-  id
-  totalCount
-  completedCount
-  ...TodoListPaged_viewer
-  ...StatusSubscriber_viewer
 }
 
 fragment Todo_todo on Todo {
@@ -93,14 +80,7 @@ v2 = {
   "kind": "LocalArgument",
   "name": "status"
 },
-v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
-},
-v4 = [
+v3 = [
   {
     "kind": "Variable",
     "name": "after",
@@ -116,7 +96,14 @@ v4 = [
     "name": "status",
     "variableName": "status"
   }
-];
+],
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+};
 return {
   "fragment": {
     "argumentDefinitions": [
@@ -126,7 +113,7 @@ return {
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "router_TodoList_Query",
+    "name": "TodoListPagedForwardQuery",
     "selections": [
       {
         "alias": null,
@@ -139,7 +126,7 @@ return {
           {
             "args": null,
             "kind": "FragmentSpread",
-            "name": "TodoList_viewer"
+            "name": "TodoListPaged_viewer"
           }
         ],
         "storageKey": null
@@ -156,7 +143,7 @@ return {
       (v0/*: any*/)
     ],
     "kind": "Operation",
-    "name": "router_TodoList_Query",
+    "name": "TodoListPagedForwardQuery",
     "selections": [
       {
         "alias": null,
@@ -166,24 +153,9 @@ return {
         "name": "viewer",
         "plural": false,
         "selections": [
-          (v3/*: any*/),
           {
             "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "totalCount",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "completedCount",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": (v4/*: any*/),
+            "args": (v3/*: any*/),
             "concreteType": "TodoConnection",
             "kind": "LinkedField",
             "name": "todos",
@@ -205,7 +177,7 @@ return {
                     "name": "node",
                     "plural": false,
                     "selections": [
-                      (v3/*: any*/),
+                      (v4/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -270,7 +242,7 @@ return {
           },
           {
             "alias": null,
-            "args": (v4/*: any*/),
+            "args": (v3/*: any*/),
             "filters": [
               "status"
             ],
@@ -278,6 +250,21 @@ return {
             "key": "TodoListPaged_todos",
             "kind": "LinkedHandle",
             "name": "todos"
+          },
+          (v4/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "totalCount",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "completedCount",
+            "storageKey": null
           }
         ],
         "storageKey": null
@@ -285,14 +272,14 @@ return {
     ]
   },
   "params": {
-    "cacheID": "5b18ad6996c6e03460194381a79d36a2",
+    "cacheID": "f75dcdafbd60ee680951724712e79950",
     "id": null,
     "metadata": {},
-    "name": "router_TodoList_Query",
+    "name": "TodoListPagedForwardQuery",
     "operationKind": "query",
-    "text": "query router_TodoList_Query(\n  $status: String!\n  $count: Int!\n  $after: String\n) {\n  viewer {\n    ...TodoList_viewer\n    id\n  }\n}\n\nfragment StatusSubscriber_viewer on User {\n  id\n  totalCount\n}\n\nfragment TodoListPaged_viewer on User {\n  todos(status: $status, first: $count, after: $after) {\n    edges {\n      node {\n        id\n        complete\n        ...Todo_todo\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  ...Todo_viewer\n}\n\nfragment TodoList_viewer on User {\n  id\n  totalCount\n  completedCount\n  ...TodoListPaged_viewer\n  ...StatusSubscriber_viewer\n}\n\nfragment Todo_todo on Todo {\n  complete\n  id\n  text\n}\n\nfragment Todo_viewer on User {\n  id\n  totalCount\n  completedCount\n}\n"
+    "text": "query TodoListPagedForwardQuery(\n  $status: String!\n  $count: Int!\n  $after: String\n) {\n  viewer {\n    ...TodoListPaged_viewer\n    id\n  }\n}\n\nfragment TodoListPaged_viewer on User {\n  todos(status: $status, first: $count, after: $after) {\n    edges {\n      node {\n        id\n        complete\n        ...Todo_todo\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  ...Todo_viewer\n}\n\nfragment Todo_todo on Todo {\n  complete\n  id\n  text\n}\n\nfragment Todo_viewer on User {\n  id\n  totalCount\n  completedCount\n}\n"
   }
 };
 })();
-(node as any).hash = '46d10e772260fed394be5a603b28652c';
+(node as any).hash = 'ac4ba58ecb44e14e4c01083c8ff9b3c5';
 export default node;

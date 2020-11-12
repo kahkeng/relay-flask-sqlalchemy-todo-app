@@ -40,7 +40,7 @@ function sharedUpdater(
 ) {
   const userProxy = store.get(user.id);
   ['any', 'completed'].forEach((status) => {
-    const conn = ConnectionHandler.getConnection(userProxy!, "TodoList_todos", { status })
+    const conn = ConnectionHandler.getConnection(userProxy!, "TodoListPaged_todos", { status })
     if (conn) {
       deletedIDs.forEach(deletedID =>
         ConnectionHandler.deleteNode(conn!, deletedID),

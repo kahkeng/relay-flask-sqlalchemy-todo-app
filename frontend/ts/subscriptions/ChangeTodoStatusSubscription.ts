@@ -47,7 +47,7 @@ function subscribe(environment: Environment, todo: Todo_todo, user: Todo_viewer)
       const userProxy = store.get(user.id)!;
       // Check if we need to remove from connection
       const status = todoProxy.getValue('complete') ? 'active' : 'completed';
-      const conn = ConnectionHandler.getConnection(userProxy, 'TodoList_todos', { status });
+      const conn = ConnectionHandler.getConnection(userProxy, 'TodoListPaged_todos', { status });
       if (conn) {
         ConnectionHandler.deleteNode(conn, todoProxy.getValue('id') as string);
       }

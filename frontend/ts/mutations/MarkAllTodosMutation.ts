@@ -61,7 +61,7 @@ function commit(
       const userProxy = store.get(user.id)!;
       const connection = ConnectionHandler.getConnection(
         userProxy,
-        'TodoList_todos',
+        'TodoListPaged_todos',
         { status },
       )!;
       const todoEdges = store
@@ -76,7 +76,7 @@ function commit(
       const userProxy = store.get(user.id)!;
       const connection = ConnectionHandler.getConnection(
         userProxy,
-        'TodoList_todos',
+        'TodoListPaged_todos',
         { status },
       )!;
 

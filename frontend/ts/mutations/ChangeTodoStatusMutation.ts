@@ -47,7 +47,7 @@ function sharedUpdater(
   const status = todoProxy.getValue('complete') ? 'active' : 'completed';
   const connection = ConnectionHandler.getConnection(
     userProxy,
-    'TodoList_todos',
+    'TodoListPaged_todos',
     { status },
   );
   if (connection) {

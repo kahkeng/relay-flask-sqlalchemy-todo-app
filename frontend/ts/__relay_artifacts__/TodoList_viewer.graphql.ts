@@ -4,19 +4,10 @@
 import { ReaderFragment } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
 export type TodoList_viewer = {
-    readonly todos: {
-        readonly edges: ReadonlyArray<{
-            readonly node: {
-                readonly id: string;
-                readonly complete: boolean | null;
-                readonly " $fragmentRefs": FragmentRefs<"Todo_todo">;
-            } | null;
-        } | null>;
-    } | null;
     readonly id: string;
     readonly totalCount: number | null;
     readonly completedCount: number | null;
-    readonly " $fragmentRefs": FragmentRefs<"Todo_viewer" | "StatusSubscriber_viewer">;
+    readonly " $fragmentRefs": FragmentRefs<"TodoListPaged_viewer" | "StatusSubscriber_viewer">;
     readonly " $refType": "TodoList_viewer";
 };
 export type TodoList_viewer$data = TodoList_viewer;
@@ -27,128 +18,19 @@ export type TodoList_viewer$key = {
 
 
 
-const node: ReaderFragment = (function(){
-var v0 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
-};
-return {
-  "argumentDefinitions": [
-    {
-      "kind": "RootArgument",
-      "name": "status"
-    }
-  ],
+const node: ReaderFragment = {
+  "argumentDefinitions": [],
   "kind": "Fragment",
-  "metadata": {
-    "connection": [
-      {
-        "count": null,
-        "cursor": null,
-        "direction": "forward",
-        "path": [
-          "todos"
-        ]
-      }
-    ]
-  },
+  "metadata": null,
   "name": "TodoList_viewer",
   "selections": [
     {
-      "alias": "todos",
-      "args": [
-        {
-          "kind": "Variable",
-          "name": "status",
-          "variableName": "status"
-        }
-      ],
-      "concreteType": "TodoConnection",
-      "kind": "LinkedField",
-      "name": "__TodoList_todos_connection",
-      "plural": false,
-      "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "concreteType": "TodoEdge",
-          "kind": "LinkedField",
-          "name": "edges",
-          "plural": true,
-          "selections": [
-            {
-              "alias": null,
-              "args": null,
-              "concreteType": "Todo",
-              "kind": "LinkedField",
-              "name": "node",
-              "plural": false,
-              "selections": [
-                (v0/*: any*/),
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "complete",
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "__typename",
-                  "storageKey": null
-                },
-                {
-                  "args": null,
-                  "kind": "FragmentSpread",
-                  "name": "Todo_todo"
-                }
-              ],
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "cursor",
-              "storageKey": null
-            }
-          ],
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "concreteType": "PageInfo",
-          "kind": "LinkedField",
-          "name": "pageInfo",
-          "plural": false,
-          "selections": [
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "endCursor",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "hasNextPage",
-              "storageKey": null
-            }
-          ],
-          "storageKey": null
-        }
-      ],
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "id",
       "storageKey": null
     },
-    (v0/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -166,7 +48,7 @@ return {
     {
       "args": null,
       "kind": "FragmentSpread",
-      "name": "Todo_viewer"
+      "name": "TodoListPaged_viewer"
     },
     {
       "args": null,
@@ -177,6 +59,5 @@ return {
   "type": "User",
   "abstractKey": null
 };
-})();
-(node as any).hash = 'e80a4ab6f10737846e465fe3772953ec';
+(node as any).hash = '1d2b6ccb4843530182301b00167f45e1';
 export default node;
