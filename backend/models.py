@@ -1,3 +1,4 @@
+from flask_login import UserMixin
 from sqlalchemy import *
 from sqlalchemy.orm import (scoped_session, sessionmaker, relationship,
                             backref)
@@ -13,10 +14,27 @@ Base = declarative_base()
 Base.query = db_session.query_property()
 
 
-class User(Base):
+class User(Base, UserMixin):
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
     name = Column(String)
+
+    @classmethod
+    def create(cls, name):
+        user = cls(name=name)
+        db_session.add(user)
+        db_session.commit()
+        return user
+
+    @classmethod
+    def get_from_name(cls, name):
+        return cls.query.filter(cls.name == name).first()
+
+    @classmethod
+    def delete_by_name(cls, name):
+        ret = cls.query.filter(cls.name == name).delete()
+        db_session.commit()
+        return ret
 
 
 class Todo(Base):

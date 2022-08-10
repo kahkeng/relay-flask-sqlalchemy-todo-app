@@ -21,6 +21,7 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+import flask_login
 import graphene
 from sqlalchemy import and_, func
 from graphene import relay
@@ -77,6 +78,11 @@ class User(SQLAlchemyObjectType):
 
 
 def get_viewer():
+    # TODO: current_user is unavailable when this is called from the frontend's connection
+    # when a user is logged in from the backend, this information is not propagated to when
+    # this endpoint is called, which thinks the user is logged out
+    # print('current user', flask_login.current_user)
+    # return flask_login.current_user
     return UserModel.query.filter(UserModel.name == 'me').first()
 
 
